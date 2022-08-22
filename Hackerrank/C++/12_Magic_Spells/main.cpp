@@ -78,21 +78,41 @@ void counterspell(Spell *spell) {
     }else if(waterb != nullptr){
         waterb->revealWaterpower();
     }else{  // If I arrive here, the wizard casted a generic spell.
-        string cl = "";  // Common letters
+        // The task is to find the size of the longest common subsequence
         string sn = spell->revealScrollName();  // Scroll name
         string js = SpellJournal::journal;  // Journal string
+        int n = sn.length();
+        int m = js.length();
+        int c[n+1][m+1];
         int i, j;  // i: iterator for scroll name, j: iterator for journal string
-        int j_start = 0;
-        for(i = 0; i < sn.length(); i++){
-            for(j = j_start; j < js.length(); j++){
-                if(sn[i] == js[j]){
-                    cl.push_back(sn[i]);
-                    i++;
-                    j_start = j + 1;
+        for(i = 0; i <= n; i++){
+            c[i][0] = 0;
+        }
+        for(j = 0; j <= m; j++){
+            c[0][j] = 0;
+        }
+        for(i = 1; i <= n; i++){
+            for(j = 1; j <= m; j++){
+                if(sn[i-1] == js[j-1]){
+                    c[i][j] = c[i-1][j-1] + 1;
+                }else{
+                    if(c[i-1][j] >= c[i][j-1]){
+                        c[i][j] = c[i-1][j];
+                    }else{
+                        c[i][j] = c[i][j-1];
+                    }
                 }
             }
         }
-        cout << cl.length() << endl;
+        cout << c[n][m] << endl;
+
+        /* Display table
+        for(i = 0; i <= n; i++){
+            for(j = 0; j <=m; j++){
+                cout << c[i][j] << ' ';
+            }
+            cout << endl;
+        }*/
     }
 }
 
